@@ -70,21 +70,48 @@
                 </button>
                 <form wire:submit.prevent='create'>
                     <div class="form-group my-1">
-                        <label for="">Enter Title</label>
-                        <input type="text" wire:model='title' class="form-control">
+                    @csrf
+                    <input type="text" wire:model='title' class="form-control">
                         @error('title')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="auteur">Auteur</label>
+                <input type="text" class="form-control" id="auteur" name="auteur" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type de Document</label>
+                <select class="form-control" id="type" name="type" required>
+                    <option value="pdf">PDF</option>
+                    <option value="docx">DOCX</option>
+                    <option value="mp4">MP4</option>
+                    <option value="jpg">JPG</option>
+                    <option value="png">PNG</option>
+                </select>
+            </div>
+           <!-- <div class="form-group">
+                <label for="fichier">Fichier</label>
+                <input type="file" class="form-control-file" id="fichier" name="fichier" accept=".pdf, .docx, .mp4, .jpg, .png" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enregistrer</button>--->
+         
                     <div class="form-group my-1">
                         <label for="">Upload Document</label>
-                        <input type="file" wire:model='document' class="form-control">
+                        <input type="file" wire:model='document' class="form-control" accept=".pdf, .docx, .mp4, .jpg, .png" required>
+                       
                         @error('document')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <button type='submit' class="btn btn-success">Save</button>
                 </form>
+
             </div>
         @endif
 
@@ -96,12 +123,30 @@
                 </button>
                 <form wire:submit.prevent='update({{ $edit_id }})'>
                     <div class="form-group my-1">
-                        <label for="">Enter Title</label>
-                        <input type="text" wire:model='edit_title' class="form-control">
+                    @csrf
+                    <input type="text" wire:model='title' class="form-control">
                         @error('title')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="auteur">Auteur</label>
+                <input type="text" class="form-control" id="auteur" name="auteur" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type de Document</label>
+                <select class="form-control" id="type" name="type" required>
+                    <option value="pdf">PDF</option>
+                    <option value="docx">DOCX</option>
+                    <option value="mp4">MP4</option>
+                    <option value="jpg">JPG</option>
+                    <option value="png">PNG</option>
+                </select>
+            </div>
                     <div class="form-group my-1">
                         <label for="">Upload Document</label>
                         <input type="file" wire:model='new_document' class="form-control">
