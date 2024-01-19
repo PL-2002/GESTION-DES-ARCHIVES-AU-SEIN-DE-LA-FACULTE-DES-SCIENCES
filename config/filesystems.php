@@ -56,6 +56,13 @@ return [
             'throw' => false,
         ],
 
+        'documents_disk' => [
+            'driver' => 'local',
+            'root' => storage_path('app/documents'), // L'emplacement sur votre disque local
+            'url' => env('APP_URL').'/documents',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

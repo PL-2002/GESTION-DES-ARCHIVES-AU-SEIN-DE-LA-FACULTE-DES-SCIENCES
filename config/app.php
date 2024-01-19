@@ -181,6 +181,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -194,6 +195,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+        Spatie\GoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
 
     ],
 
@@ -211,5 +214,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
+    'Image' => Intervention\Image\Facades\Image::class,
+    'GoogleCloudStorage' => Spatie\GoogleCloudStorage\GoogleCloudStorageFacade::class,
+    'PDF' => Barryvdh\DomPDF\Facade::class,
 
 ];

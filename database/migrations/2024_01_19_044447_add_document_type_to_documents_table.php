@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('documents', function (Blueprint $table) {
-            $table->id();
-            $table->text('title');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('file_path');
-            $table->timestamps();
+        Schema::table('documents', function (Blueprint $table) {
+            $table->string('document_type')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('documents');
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropColumn('document_type');
+        });
     }
 };

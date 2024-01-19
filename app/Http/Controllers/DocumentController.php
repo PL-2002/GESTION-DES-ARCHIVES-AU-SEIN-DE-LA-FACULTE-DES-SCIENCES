@@ -51,7 +51,7 @@ class DocumentController extends Controller
             'date' => $request->date,
             'auteur' => $request->auteur,
             'type' => $request->type,
-            'chemin_fichier' => $driveFile->id, // 
+            'chemin_fichier' => $driveFile->id, //t 
         ]);
 
         return redirect()->route('documents.index')->with('success', 'Document ajouté avec succès.');

@@ -9,7 +9,7 @@ class Document extends Model
 {
     use HasFactory;
     protected $table = 'documents';
-    protected $filable = ['title', 'user_id', 'document'];
+    protected $filable = ['title', 'user_id', 'file_path'];
 
     public function users()
     {

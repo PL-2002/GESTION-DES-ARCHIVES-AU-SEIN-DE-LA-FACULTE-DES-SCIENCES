@@ -71,6 +71,7 @@
                 <form wire:submit.prevent='create'>
                     <div class="form-group my-1">
                     @csrf
+                    <label for="date">Titre</label>
                     <input type="text" wire:model='title' class="form-control">
                         @error('title')
                             <span class="text-danger">{{ $message }}</span>
@@ -84,17 +85,15 @@
                 <label for="auteur">Auteur</label>
                 <input type="text" class="form-control" id="auteur" name="auteur" required>
             </div>
+            
+           <!-- 
             <div class="form-group">
                 <label for="type">Type de Document</label>
-                <select class="form-control" id="type" name="type" required>
+                <select class="form-control" id="type" name="file" required>
                     <option value="pdf">PDF</option>
-                    <option value="docx">DOCX</option>
-                    <option value="mp4">MP4</option>
-                    <option value="jpg">JPG</option>
-                    <option value="png">PNG</option>
                 </select>
             </div>
-           <!-- <div class="form-group">
+            <div class="form-group">
                 <label for="fichier">Fichier</label>
                 <input type="file" class="form-control-file" id="fichier" name="fichier" accept=".pdf, .docx, .mp4, .jpg, .png" required>
             </div>
@@ -103,13 +102,16 @@
          
                     <div class="form-group my-1">
                         <label for="">Upload Document</label>
-                        <input type="file" wire:model='document' class="form-control" accept=".pdf, .docx, .mp4, .jpg, .png" required>
+                        <input type="file" wire:model='file' class="form-control" accept=".pdf, image/*" required>
                        
                         @error('document')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <button type='submit' class="btn btn-success">Save</button>
+
+                    
+
                 </form>
 
             </div>
