@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Livewire\Admin\ApproveUser;
 use App\Http\Livewire\Admin\Category;
 use App\Http\Livewire\Admin\Dashboard as AdminDashboard;
@@ -43,3 +44,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/users', ApproveUser::class)->name('admin.users');
     Route::get('/admin/document', AdminDocument::class)->name('admin.document');
 });
+
+Route::get('download-pdf', [PostController::class, 'downloadPDF']);
+Route::resource('categories', CategoryController::class);
+

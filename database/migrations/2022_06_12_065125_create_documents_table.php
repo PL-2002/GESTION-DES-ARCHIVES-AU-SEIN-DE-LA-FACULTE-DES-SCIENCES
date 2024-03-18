@@ -16,8 +16,11 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->text('title');
+            $table->text('author')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('file_path');
+            $table->date('date')->nullable();
+            $table->string('document_type')->nullable();
             $table->timestamps();
         });
     }

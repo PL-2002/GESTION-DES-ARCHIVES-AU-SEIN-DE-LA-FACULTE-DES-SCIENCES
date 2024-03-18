@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('parent_id')->nullable(); // Pour les sous-catégories
-            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('documents', function (Blueprint $table) {
+            $table->date('date')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropColumn('document_type');
+        });
     }
 };

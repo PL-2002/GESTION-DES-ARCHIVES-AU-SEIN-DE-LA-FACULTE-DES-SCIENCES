@@ -2,8 +2,10 @@
 
 namespace App\Http\Livewire\User;
 
-
+use Ilovepdf\Ilovepdf;
 use PDF;
+use Illuminate\Http\Request;
+use Dompdf\Dompdf;
 use App\Models\Document as ModelsDocument;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -19,7 +21,9 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class Document extends Component
 {
+    public $author;
     public $title,
+        $date,
         $file,
         $edit_id,
         $edit_title,
@@ -35,6 +39,7 @@ class Document extends Component
     public $selectedDocument;
 
 
+
     use WithFileUploads;
     use WithPagination;
 
@@ -46,6 +51,8 @@ class Document extends Component
     public function viewDocument($documentId)
     {
         $this->selectedDocument = ModelsDocument::findOrFail($documentId);
+        $filePath = $this->selectedDocument->file_path;
+        $this->downloadFile = $this->downloadPDF($filePath, $documentId);
         $this->showTable = false;
         $this->createForm = false;
         $this->updateForm = false;
@@ -62,7 +69,9 @@ class Document extends Component
     $documents = ModelsDocument::orderBy('id', 'DESC')->where('user_id', Auth::user()->id)->paginate(4);
     $this->totalDocuments = ModelsDocument::count();
     
+
     return view('livewire.user.document', [
+        
         'documents' => $documents,
         'new_document' => $this->new_document,
         'old_document' => $this->old_document,
@@ -85,45 +94,73 @@ class Document extends Component
         $this->showTable = false;
         $this->createForm = true;
     }
-
+    
     public function create()
     {
         $document = new ModelsDocument();
+
         $this->validate([
             'title' => ['required'],
-            'file' => ['required', 'mimes:pdf,jpg, png', 'max:20480'], // Adjust the mime types and max size accordingly
-            
+            'file' => ['required', 'mimes:pdf,jpg,png', 'max:20480'],
+            'author' => ['nullable'],
         ]);
 
-        $filename = "";
-
-        if ($this->file && $this->file->getMimeType() == 'image/*') {
-            
-            $pdfFilename = 'documents/' . Str::uuid() . '.pdf';
-            $image = Image::make($this->file)->encode('pdf');
-            $image->save(storage_path("app/public/{$pdfFilename}"));
-
-            $this->file = $pdfFilename;
-        } else {
-            // Si le fichier n'est pas une image, stocke-le normalement
-            $document->document_type = 'pdf'; // Ajoute un champ pour spécifier le type de document
-            $document->file_path = Storage::putFile('documents', $this->file, 'public');
-            
-        }
-
         $document->title = $this->title;
+        $document->author = $this->author;
         $document->user_id = Auth::user()->id;
+
+        // Enregistrez l'image
         $document->document_type = 'pdf';
-        $document->file_path = $this->file;
+        $imagePath = $this->file->store('documents', 'public');
+        $document->file_path = $imagePath;
+
+        // Sauvegardez le document
         $result = $document->save();
 
-        if ($result) {
-            session()->flash('success', 'Document uploaded successfully');
+        //if ($result) {
+            // Appel à la méthode downloadPDF pour générer et télécharger le PDF
+            //$this->downloadPDF($document->file_path, $document->id);
+            //session()->flash('success', 'Document uploaded successfully');
             $this->title = "";
             $this->file = "";
-            $this->goBack();
-        }
+            $this->goback();
+        //}
     }
+
+   
+    public function downloadPDF($imagePath, $documentId)
+   {
+        //$imagePath = $documentId;
+        // Initialisez l'API iLovePDF avec vos clés d'API (remplacez par vos propres clés)
+        $ilovepdf = new Ilovepdf('project_public_194707eee8c6bd80b6e1ff62702bcbe0_3d2wMd011adc7ecb22574c9c081e9f3552ade', 'secret_key_0b46389dbf04b99020e9d5b5a4a92162_5CkIwf291d5e2527adf6c45503ec294200819');
+
+        // Créez une tâche de conversion d'image en PDF
+        $task = $ilovepdf->newTask('imagepdf');
+
+        // Ajoutez le fichier image à la tâche
+        $task->addFile(storage_path("app/public/$imagePath"));
+
+        // Exécutez la tâche
+        //$task->execute();
+        $result = $task->execute(true);
+         // Vérifiez si la tâche a réussi
+        if (empty($result->error)) {
+            // Téléchargez le fichier PDF résultant
+        $pdfPath = storage_path("app/public/documents/{$documentId}.pdf");
+        $result->download($pdfPath);
+        } else {
+            // Gérez l'erreur (ex. journalisation, affichage d'un message d'erreur)
+            Log::error('Erreur lors de la conversion d\'image en PDF avec iLovePDF', ['error' => $result->getError()]);
+            // Affichez un message d'erreur à l'utilisateur si nécessaire
+        }
+
+        // Téléchargez le fichier PDF résultant
+        //$pdfPath = storage_path("app/public/documents/{$documentId}");
+        //if (!file_exists(dirname($pdfPath))) {
+            //mkdir(dirname($pdfPath), 0755, true);
+        //}
+        //$task->download($pdfPath);
+   }
 
     public function edit($id)
     {
@@ -181,6 +218,16 @@ class Document extends Component
             $this->goBack();
         }
     }
+
+    public function delete($id)
+    {   
+        $document = ModelsDocument::findOrFail($id);
+        if ($document) {
+            $document->delete();
+            $this->emit('documentDeleted', $id);
+        }
+    }
+
     public function openCamera()
     {
         $this->isCameraOpen = true;

@@ -6,8 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "barryvdh/laravel-dompdf": "^2.0",
         "calcinai/php-imagick": "^0.1.2",
+        "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
+        "ilovepdf/ilovepdf-php": "^1.2",
         "intervention/image": "^2.7",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
